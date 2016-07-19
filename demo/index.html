@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>js-sdk-test</title>
+    <script src="jquery.min.js"></script>
+    <script src="jquery.cookie.min.js"></script>
+    <script src="../gizwits_noti_ws_0.1.0.js"></script>
+    <script type="text/javascript">
+        var gizwitsNotiWs;
+        var count = 0;
+        $(document).ready(setDefault);
+
+        function setDefault()
+        {
+            $('#enterpriseId').val("8fb23e6dbf06438b8200cf4588e45b5f");
+            $('#enterpriseSecret').val("c7c9e01549004b96a8612a0e7c71a9d6");
+            $('#host').val("m2mv4.iotsdk.com");
+            $('#port').val("2016");
+            // $('#enterpriseId').val($.cookie('enterpriseId'));
+//             $('#enterpriseSecret').val($.cookie('enterpriseSecret'));
+//             $('#host').val($.cookie('host'));
+//             $('#port').val($.cookie('port'));
+            addSubscribe();
+            $('#port').val("2016");
+            $("#eventPk1").val("4a5e512436fc11e486f252540052876d");
+        }
+
+        function newObj()
+        {
+            if (gizwitsNotiWs != null)
+            {
+                alert("对象已被初始化，如需改变参数，请刷新页面.");
+                return;
+            }
+            var enterpriseId = $('#enterpriseId').val();
+            var enterpriseSecret = $('#enterpriseSecret').val();
+            var host = $('#host').val();
+            var port = $('#port').val();
+            gizwitsNotiWs = new GizwitsNotiWS(enterpriseId, enterpriseSecret, host, port);
+
+            gizwitsNotiWs.onInit = onInit;
+            gizwitsNotiWs.onConnected = onConnected;
+            gizwitsNotiWs.onSubscribed = onSubscribed;
+            gizwitsNotiWs.onEvent = onEvent;
+            gizwitsNotiWs.onError = onError;
+
+            $.cookie('enterpriseId', enterpriseId);
+            $.cookie('enterpriseSecret', enterpriseSecret);
+            $.cookie('host', host);
+            $.cookie('port', port);
+            showScreen("初始化对象成功!");
+        }
+        
+        function init()
+        {
+            showScreen("发送init指令!");
+            gizwitsNotiWs.init();
+        }
+
+        function connect()
+        {
+            gizwitsNotiWs.connect();
+            showScreen("已发送connect指令!");
+        }
+        
+        function addSubscribe()
+        {
+            if(count == undefined){
+                alert("请先初始化GizwitsWS对象");
+            } else {
+                count++;
+                var tr1 = '<tr><td><label>ProductKey'+count+':</label></td> \
+                          <td><input type="text" id="eventPk'+count+'"></input></td></tr>';
+                var tr2 = '<tr id="eventType' +count+ '"><td><label>EventType'+count+':</label></td><td>' +
+                  '<label><input name="eventType" type="checkbox" value="device.online" />设备上线 </label>' + 
+                  '<label><input name="eventType" type="checkbox" value="device.offline" />设备下线 </label>' +
+                  '<label><input name="eventType" type="checkbox" value="device.attr_fault" />设备故障 </label>' +                   '<label><input name="eventType" type="checkbox" value="device.attr_alert" />设备告警 </label>' +
+                  '<label><input name="eventType" type="checkbox" value="device.status.raw" />设备状态raw </label>' +
+                  '<label><input name="eventType" type="checkbox" value="device.status.kv" />设备状态kv </label>' +
+                  '<label><input name="eventType" type="checkbox" value="datapoints.changed" />数据点编辑 </label></td></tr>';
+                
+                $("#subTable").append(tr1);
+                $("#subTable").append(tr2);
+            }
+        }
+
+        function subscribe()
+        {
+            var data = [];
+            for (var i=1; i<=count; i++){
+                var pk = $("#eventPk" +i).val();
+                var eventType = [];
+                $("#eventType" + i + " input[type=checkbox]").each(function(){
+                    if(this.checked){
+                        eventType.push($(this).val());
+                    }
+                });
+                if(pk !== "" && eventType.length > 0){
+                    data.push({"product_key": pk, "events": eventType});
+                }
+            }
+            if(data.length > 0){
+                showScreen("开始订阅事件!");
+                gizwitsNotiWs.subscribe(data);
+            }
+            
+        }
+
+        function clearLog()
+        {
+            $('#log').html("");
+        }
+
+        //=========================================================
+        // callback functions
+        //=========================================================
+        function onInit()
+        {
+            showScreen("完成onInit!接下来可以开始连接");
+        }
+        
+        function onConnected()
+        {
+            showScreen("完成onConnected!与服务端连接成功!");
+        }
+        
+        function onSubscribed()
+        {
+            showScreen("完成onSubscribed!与服务端连接成功!");
+        }
+
+        function onEvent(msg)
+        {
+            showScreen(JSON.stringify(msg));
+        }
+
+        function onError(value)
+        {
+            showError(value.toString());
+        }
+
+        //=========================================================
+        // inner functions
+        //=========================================================
+        function showScreen(txt)
+        {
+            $('#log').prepend('<p style="color: blue">' + txt + '</p>');
+        }
+
+        function showError(txt)
+        {
+            $('#log').prepend('<p style="color: red">' + txt + '</p>');
+        }
+
+    </script>
+</head>
+<body>
+    <h3>Gizwits-Noti-Javascript-SDK Example</h3>
+    <p>（请使用Chrome、Firefox等支持Websocket功能的浏览器，低版本IE或Firefox存在不兼容的情况）</p>
+    <hr/>
+    <table border="0" cellpadding="0", cellspacing="0">
+        <tr>
+            <td align="left" valign="top" style="border-right: #d0d0d0 1px solid; padding: 0 10px 0 0;">
+                <h4>1. 首先，请初始化GizwitsWS对象</h4>
+                <table border="0" cellpadding="0", cellspacing="2">
+                    <tr>
+                        <td align="left" valign="top">
+                            <label>enterpriseId:</label>
+                        </td>
+                        <td align="left" valign="top">
+                            <input type="text" id="enterpriseId" value="" size="30" placeholder="填写机智云eid" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="left" valign="top">
+                            <label>enterpriseSecret:</label>
+                        </td>
+                        <td align="left" valign="top">
+                            <input type="password" id="enterpriseSecret" size="30" placeholder="填写机智云esecret" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="left" valign="top">
+                            <label>host:</label>
+                        </td>
+                        <td align="left" valign="top">
+                            <input type="text" id="host" value="" size="30" placeholder="填写服务域名" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="left" valign="top">
+                            <label>port:</label>
+                        </td>
+                        <td align="left" valign="top">
+                            <input type="text" id="port" value="" size="30" placeholder="填写服务端口" />
+                        </td>
+                    </tr>
+                </table>
+                <br/>
+                <button id="newObj" onclick="newObj()">Do New!</button>
+                <br/>
+                <p>（初始化对象的过程中，已经自动完成了callback函数的创建。）</p>
+                
+                <h4>2. 然后，使用GizwitsNotiWS.init()初始操作</h4>
+                <button id="connect" onclick="init()">Do Init!</button>
+                <br/>
+                <p>（websocket创建成功，会回调函数onInit。）</p>
+                
+                <h4>3. 然后，使用GizwitsNotiWS.connet()创建webscoket连接</h4>
+                <button id="connect" onclick="connect()">Do Connect!</button>
+                <br/>
+                <p>（websocket创建成功，会回调函数onConnected。）</p>
+                
+                <h4>4. 添加已关联的pk以及事件类型，开始订阅</h4>
+                <button id="add" onclick="addSubscribe()">Add subscribe!</button>
+                <br/>
+                <table id="subTable" border="0" cellpadding="0", cellspacing="2">
+                </table>        
+                <br/>
+                <button id="subscribe" onclick="subscribe()">Do Subscribe!</button>
+                <br/>
+                <p>（订阅成功后，稍后会收到事件。回调onEvent接受设备消息。）</p>
+            </td>
+            <td align="left" valign="top" style="padding: 0 0 0 10px;word-wrap:break-word;">
+                <button id="clear" onclick="clearLog();" >clear</button><br/>
+                <span id="log"></span>
+            </td>
+        </tr>
+    </table>
+
+</body>
+</html>
