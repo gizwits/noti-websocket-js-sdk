@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>js-sdk-test</title>
+    <title>noti-js-sdk-test</title>
     <style>
     p {
         margin:3px;
@@ -20,16 +20,11 @@
 
         function setDefault()
         {
-            $('#enterpriseId').val("8fb23e6dbf06438b8200cf4588e45b5f");
-            $('#enterpriseSecret').val("c7c9e01549004b96a8612a0e7c71a9d6");
-            $('#host').val("m2mv4.iotsdk.com");
-            $('#port').val("2016");
-            // $('#enterpriseId').val($.cookie('enterpriseId'));
-//             $('#enterpriseSecret').val($.cookie('enterpriseSecret'));
-//             $('#host').val($.cookie('host'));
-//             $('#port').val($.cookie('port'));
+            $('#enterpriseId').val($.cookie('enterpriseId'));
+            $('#enterpriseSecret').val($.cookie('enterpriseSecret'));
+            $('#host').val($.cookie('host'));
+            $('#port').val($.cookie('port'));
             addSubscribe();
-            $("#eventPk1").val("4a5e512436fc11e486f252540052876d");
         }
 
         function newObj()
@@ -67,7 +62,7 @@
         {
             count++;
             var tr1 = '<tr><td><label>ProductKey'+count+':</label></td> \
-                      <td><input type="text" id="eventPk'+count+'"></input></td></tr>';
+                      <td><input type="text" size="42" id="eventPk'+count+'"></input></td></tr>';
             var tr2 = '<tr id="eventType' +count+ '"><td><label>EventType'+count+':</label></td><td>' +
               '<label><input name="eventType" type="checkbox" value="device.online" />设备上线 </label>' + 
               '<label><input name="eventType" type="checkbox" value="device.offline" />设备下线 </label>' +
@@ -157,7 +152,7 @@
                         <label>enterpriseId:</label>
                     </td>
                     <td align="left" valign="top">
-                        <input type="text" id="enterpriseId" value="" size="30" placeholder="填写机智云eid" />
+                        <input type="text" id="enterpriseId" value="" size="42" placeholder="填写机智云eid" />
                     </td>
                 </tr>
                 <tr>
@@ -165,7 +160,7 @@
                         <label>enterpriseSecret:</label>
                     </td>
                     <td align="left" valign="top">
-                        <input type="password" id="enterpriseSecret" size="30" placeholder="填写机智云esecret" />
+                        <input type="password" id="enterpriseSecret" size="42" placeholder="填写机智云esecret" />
                     </td>
                 </tr>
                 <tr>
@@ -173,7 +168,7 @@
                         <label>host:</label>
                     </td>
                     <td align="left" valign="top">
-                        <input type="text" id="host" value="" size="30" placeholder="填写服务域名" />
+                        <input type="text" id="host" value="" size="42" placeholder="服务域名(不填默认为noti.gizwits.com)" />
                     </td>
                 </tr>
                 <tr>
@@ -181,7 +176,7 @@
                         <label>port:</label>
                     </td>
                     <td align="left" valign="top">
-                        <input type="text" id="port" value="" size="30" placeholder="填写服务端口" />
+                        <input type="text" id="port" value="" size="42" placeholder="服务端口(不填默认为2016)" />
                     </td>
                 </tr>
             </table>

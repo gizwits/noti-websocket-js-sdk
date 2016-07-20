@@ -80,7 +80,7 @@ GizwitsNotiWS.prototype._getWebsocketConnInfo = function()
 {
     var me = this;
     var pre = "wss://";
-    var host = "noti.gizwitsapi.com";
+    var host = "noti.gizwits.com";
     var port = 2016;
     if(me._wsHost){
         host = me._wsHost;
@@ -155,7 +155,8 @@ Connection.prototype._onWSMessage = function(evt)
             }
             else
             {
-                conn._callbackObj._sendError("Login failed, will try again, please wait...");
+                conn._callbackObj._sendError("Login failed with msg: " + res.data.msg);
+                conn._callbackObj._sendError("Login will try again, please wait...");
                 conn._tryLoginAgain();
             }
             break;
