@@ -9,7 +9,6 @@
 // prefetchCount = <int>
 function GizwitsNotiWS(enterpriseId, enterpriseSecret, wsHost, wsPort, subscribeEvent, prefetchCount)
 {
-    this.onInit = undefined;
     this.onConnected = undefined;
     this.onSubscribed = undefined;
     this.onEvent = undefined;
@@ -39,15 +38,6 @@ function Connection(wsInfo, gizwitsNotiWs)
 //=========================================================
 // api functions
 //=========================================================
-GizwitsNotiWS.prototype.init = function()
-{
-    var me = this;
-    if (me.onInit)
-    {
-        me.onInit();
-    }
-};
-
 GizwitsNotiWS.prototype.connect = function()
 {
     var me = this;
@@ -185,8 +175,10 @@ Connection.prototype._onWSMessage = function(evt)
         case "enterprise_event_push":
             if (conn._callbackObj.onEvent)
             {
+                var delivery_id = res.delivery_id;
+                delete res.delivery_id;
                 conn._callbackObj.onEvent(res);
-                conn._ackEvent(res.delivery_id);
+                conn._ackEvent(delivery_id);
             }
             break;
     }

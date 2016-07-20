@@ -3,6 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <title>js-sdk-test</title>
+    <style>
+    p {
+        margin:3px;
+        display: inline-block;
+        width: 100%;
+    }
+    </style>
     <script src="jquery.min.js"></script>
     <script src="jquery.cookie.min.js"></script>
     <script src="../gizwits_noti_ws_0.1.0.js"></script>
@@ -39,7 +46,6 @@
             var port = $('#port').val();
             gizwitsNotiWs = new GizwitsNotiWS(enterpriseId, enterpriseSecret, host, port);
 
-            gizwitsNotiWs.onInit = onInit;
             gizwitsNotiWs.onConnected = onConnected;
             gizwitsNotiWs.onSubscribed = onSubscribed;
             gizwitsNotiWs.onEvent = onEvent;
@@ -49,15 +55,9 @@
             $.cookie('enterpriseSecret', enterpriseSecret);
             $.cookie('host', host);
             $.cookie('port', port);
-            showScreen("初始化对象成功!");
+            showScreen("初始化对象成功!可以开始连接。");
         }
         
-        function init()
-        {
-            showScreen("发送init指令!");
-            gizwitsNotiWs.init();
-        }
-
         function connect()
         {
             gizwitsNotiWs.connect();
@@ -66,23 +66,19 @@
         
         function addSubscribe()
         {
-            if(count == undefined){
-                alert("请先初始化GizwitsWS对象");
-            } else {
-                count++;
-                var tr1 = '<tr><td><label>ProductKey'+count+':</label></td> \
-                          <td><input type="text" id="eventPk'+count+'"></input></td></tr>';
-                var tr2 = '<tr id="eventType' +count+ '"><td><label>EventType'+count+':</label></td><td>' +
-                  '<label><input name="eventType" type="checkbox" value="device.online" />设备上线 </label>' + 
-                  '<label><input name="eventType" type="checkbox" value="device.offline" />设备下线 </label>' +
-                  '<label><input name="eventType" type="checkbox" value="device.attr_fault" />设备故障 </label>' +                   '<label><input name="eventType" type="checkbox" value="device.attr_alert" />设备告警 </label>' +
-                  '<label><input name="eventType" type="checkbox" value="device.status.raw" />设备状态raw </label>' +
-                  '<label><input name="eventType" type="checkbox" value="device.status.kv" />设备状态kv </label>' +
-                  '<label><input name="eventType" type="checkbox" value="datapoints.changed" />数据点编辑 </label></td></tr>';
-                
-                $("#subTable").append(tr1);
-                $("#subTable").append(tr2);
-            }
+            count++;
+            var tr1 = '<tr><td><label>ProductKey'+count+':</label></td> \
+                      <td><input type="text" id="eventPk'+count+'"></input></td></tr>';
+            var tr2 = '<tr id="eventType' +count+ '"><td><label>EventType'+count+':</label></td><td>' +
+              '<label><input name="eventType" type="checkbox" value="device.online" />设备上线 </label>' + 
+              '<label><input name="eventType" type="checkbox" value="device.offline" />设备下线 </label>' +
+              '<label><input name="eventType" type="checkbox" value="device.attr_fault" />设备故障 </label>' +                   '<label><input name="eventType" type="checkbox" value="device.attr_alert" />设备告警 </label>' +
+              '<label><input name="eventType" type="checkbox" value="device.status.raw" />设备状态raw </label>' +
+              '<label><input name="eventType" type="checkbox" value="device.status.kv" />设备状态kv </label>' +
+              '<label><input name="eventType" type="checkbox" value="datapoints.changed" />数据点编辑 </label></td></tr>';
+            
+            $("#subTable").append(tr1);
+            $("#subTable").append(tr2);
         }
 
         function subscribe()
@@ -104,7 +100,6 @@
                 showScreen("开始订阅事件!");
                 gizwitsNotiWs.subscribe(data);
             }
-            
         }
 
         function clearLog()
@@ -114,20 +109,15 @@
 
         //=========================================================
         // callback functions
-        //=========================================================
-        function onInit()
-        {
-            showScreen("完成onInit!接下来可以开始连接");
-        }
-        
+        //=========================================================        
         function onConnected()
         {
-            showScreen("完成onConnected!与服务端连接成功!");
+            showScreen("完成onConnected!可以开始订阅事件");
         }
         
         function onSubscribed()
         {
-            showScreen("完成onSubscribed!与服务端连接成功!");
+            showScreen("完成onSubscribed!可以开始接受消息");
         }
 
         function onEvent(msg)
@@ -159,75 +149,66 @@
     <h3>Gizwits-Noti-Javascript-SDK Example</h3>
     <p>（请使用Chrome、Firefox等支持Websocket功能的浏览器，低版本IE或Firefox存在不兼容的情况）</p>
     <hr/>
-    <table border="0" cellpadding="0", cellspacing="0">
-        <tr>
-            <td align="left" valign="top" style="border-right: #d0d0d0 1px solid; padding: 0 10px 0 0;">
-                <h4>1. 首先，请初始化GizwitsWS对象</h4>
-                <table border="0" cellpadding="0", cellspacing="2">
-                    <tr>
-                        <td align="left" valign="top">
-                            <label>enterpriseId:</label>
-                        </td>
-                        <td align="left" valign="top">
-                            <input type="text" id="enterpriseId" value="" size="30" placeholder="填写机智云eid" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td align="left" valign="top">
-                            <label>enterpriseSecret:</label>
-                        </td>
-                        <td align="left" valign="top">
-                            <input type="password" id="enterpriseSecret" size="30" placeholder="填写机智云esecret" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td align="left" valign="top">
-                            <label>host:</label>
-                        </td>
-                        <td align="left" valign="top">
-                            <input type="text" id="host" value="" size="30" placeholder="填写服务域名" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td align="left" valign="top">
-                            <label>port:</label>
-                        </td>
-                        <td align="left" valign="top">
-                            <input type="text" id="port" value="" size="30" placeholder="填写服务端口" />
-                        </td>
-                    </tr>
-                </table>
-                <br/>
-                <button id="newObj" onclick="newObj()">Do New!</button>
-                <br/>
-                <p>（初始化对象的过程中，已经自动完成了callback函数的创建。）</p>
-                
-                <h4>2. 然后，使用GizwitsNotiWS.init()初始操作</h4>
-                <button id="connect" onclick="init()">Do Init!</button>
-                <br/>
-                <p>（websocket创建成功，会回调函数onInit。）</p>
-                
-                <h4>3. 然后，使用GizwitsNotiWS.connet()创建webscoket连接</h4>
-                <button id="connect" onclick="connect()">Do Connect!</button>
-                <br/>
-                <p>（websocket创建成功，会回调函数onConnected。）</p>
-                
-                <h4>4. 添加已关联的pk以及事件类型，开始订阅</h4>
-                <button id="add" onclick="addSubscribe()">Add subscribe!</button>
-                <br/>
-                <table id="subTable" border="0" cellpadding="0", cellspacing="2">
-                </table>        
-                <br/>
-                <button id="subscribe" onclick="subscribe()">Do Subscribe!</button>
-                <br/>
-                <p>（订阅成功后，稍后会收到事件。回调onEvent接受设备消息。）</p>
-            </td>
-            <td align="left" valign="top" style="padding: 0 0 0 10px;word-wrap:break-word;">
-                <button id="clear" onclick="clearLog();" >clear</button><br/>
-                <span id="log"></span>
-            </td>
-        </tr>
-    </table>
+    <div>
+        <div align="left" valign="top" style="width: 48%; display: inline-block; box-sizing: border-box; border-right: #d0d0d0 1px solid; padding: 0 10px 0 0;">
+            <h4>1. 首先，请初始化GizwitsWS对象</h4>
+            <table border="0" cellpadding="0", cellspacing="2">
+                <tr>
+                    <td align="left" valign="top">
+                        <label>enterpriseId:</label>
+                    </td>
+                    <td align="left" valign="top">
+                        <input type="text" id="enterpriseId" value="" size="30" placeholder="填写机智云eid" />
+                    </td>
+                </tr>
+                <tr>
+                    <td align="left" valign="top">
+                        <label>enterpriseSecret:</label>
+                    </td>
+                    <td align="left" valign="top">
+                        <input type="password" id="enterpriseSecret" size="30" placeholder="填写机智云esecret" />
+                    </td>
+                </tr>
+                <tr>
+                    <td align="left" valign="top">
+                        <label>host:</label>
+                    </td>
+                    <td align="left" valign="top">
+                        <input type="text" id="host" value="" size="30" placeholder="填写服务域名" />
+                    </td>
+                </tr>
+                <tr>
+                    <td align="left" valign="top">
+                        <label>port:</label>
+                    </td>
+                    <td align="left" valign="top">
+                        <input type="text" id="port" value="" size="30" placeholder="填写服务端口" />
+                    </td>
+                </tr>
+            </table>
+            <br/>
+            <button id="newObj" onclick="newObj()">Do New!</button>
+            <br/>
+            <p>（初始化对象的过程中，已经自动完成了callback函数的创建。）</p>
+            
+            <h4>2. 然后，使用GizwitsNotiWS.connet()创建webscoket连接</h4>
+            <button id="connect" onclick="connect()">Do Connect!</button>
+            <br/>
+            <p>（websocket创建成功，回调函数onConnected。）</p>
+            
+            <h4>3. 添加已关联的pk以及事件类型并完成订阅。添加订阅：<button id="add" onclick="addSubscribe()">Add subscribe!</button></h4> 
+            <table id="subTable" border="0" cellpadding="0", cellspacing="2">
+            </table>        
+            <br/>
+            <button id="subscribe" onclick="subscribe()">Do Subscribe!</button>
+            <br/>
+            <p>（订阅成功后，稍后会收到事件。回调onEvent接受设备消息。）</p>
+        </div><!--
+        --><div align="left" valign="top" style="width: 52%; padding: 0 0 0 10px; display: inline-block; box-sizing: border-box; word-wrap:break-word; vertical-align: top;">
+            <button id="clear" onclick="clearLog();" >clear</button><br/>
+            <span id="log"></span>
+        </div>
+    </div>
 
 </body>
 </html>
