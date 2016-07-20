@@ -175,10 +175,10 @@ Connection.prototype._onWSMessage = function(evt)
         case "enterprise_event_push":
             if (conn._callbackObj.onEvent)
             {
-                var delivery_id = res.delivery_id;
+                var deliveryId = res.delivery_id;
                 delete res.delivery_id;
                 conn._callbackObj.onEvent(res);
-                conn._ackEvent(delivery_id);
+                conn._ackEvent(deliveryId);
             }
             break;
     }
