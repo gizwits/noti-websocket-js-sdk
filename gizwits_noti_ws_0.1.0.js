@@ -3,7 +3,8 @@
 // subscribeEvent = [
 //			{
 //				"product_key": <string>, 
-//				"events": ["device.online", "device.offline", "device.attr_fault", "device.attr_alert", "device.status.raw", "device.status.kv", "datapoints.changed"]
+//              "macs": [<string>],
+//				"events": ["device.online", "device.offline", "device.attr_fault", "device.attr_alert", "device.status.raw", "device.status.kv"]
 //			}
 //		]
 // prefetchCount = <int>

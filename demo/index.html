@@ -63,16 +63,19 @@
             count++;
             var tr1 = '<tr><td><label>ProductKey'+count+':</label></td> \
                       <td><input type="text" size="42" id="eventPk'+count+'"></input></td></tr>';
-            var tr2 = '<tr id="eventType' +count+ '"><td><label>EventType'+count+':</label></td><td>' +
+            var tr2 = '<tr><td><label>Macs'+count+':</label></td> \
+                      <td><input type="text" size="42" id="macs'+count+'" placeholder="多个mac可英文逗号分隔"></input></td></tr>';
+            var tr3 = '<tr id="eventType' +count+ '"><td><label>EventType'+count+':</label></td><td>' +
               '<label><input name="eventType" type="checkbox" value="device.online" />设备上线 </label>' + 
               '<label><input name="eventType" type="checkbox" value="device.offline" />设备下线 </label>' +
               '<label><input name="eventType" type="checkbox" value="device.attr_fault" />设备故障 </label>' +                   '<label><input name="eventType" type="checkbox" value="device.attr_alert" />设备告警 </label>' +
               '<label><input name="eventType" type="checkbox" value="device.status.raw" />设备状态raw </label>' +
               '<label><input name="eventType" type="checkbox" value="device.status.kv" />设备状态kv </label>' +
-              '<label><input name="eventType" type="checkbox" value="datapoints.changed" />数据点编辑 </label></td></tr>';
+              '</td></tr>';
             
             $("#subTable").append(tr1);
             $("#subTable").append(tr2);
+            $("#subTable").append(tr3);
         }
 
         function subscribe()
@@ -80,14 +83,22 @@
             var data = [];
             for (var i=1; i<=count; i++){
                 var pk = $("#eventPk" +i).val();
-                var eventType = [];
+                var eventTypes = [];
+                var macs = [];
                 $("#eventType" + i + " input[type=checkbox]").each(function(){
                     if(this.checked){
-                        eventType.push($(this).val());
+                        eventTypes.push($(this).val());
                     }
                 });
-                if(pk !== "" && eventType.length > 0){
-                    data.push({"product_key": pk, "events": eventType});
+                if($("#macs"+i).val()){
+                    macs = $("#macs"+i).val().split(",");
+                }
+                if(pk !== "" && eventTypes.length > 0){
+                    data.push({
+                                "product_key": pk, 
+                                "macs": macs,
+                                "events": eventTypes
+                             });
                 }
             }
             if(data.length > 0){
