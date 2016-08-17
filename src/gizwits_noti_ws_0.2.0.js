@@ -249,7 +249,7 @@ Connection.prototype._ackEvent = function(deliveryId)
             delivery_id: deliveryId
         };
     conn._sendJson(json);
-}
+};
 
 Connection.prototype._sendJson = function(json)
 {
